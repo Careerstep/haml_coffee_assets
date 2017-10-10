@@ -33,7 +33,12 @@ module HamlCoffeeAssets
       return "" unless ::Rails.respond_to?(:application)
       return "" unless ::Rails.application.respond_to?(:assets)
       # env.find_asset(name)
-      Rails.application.assets_manifest.files.values.map{|v| v['logical_path']}.include?('#{name}')
+      puts "============for debugging: name ============", name
+      puts "============for debugging: Rails.application.assets  ============", Rails.application.assets
+      puts "============for debugging: env.find_asset(name)  ============", env.find_asset(name)
+      puts "============for debugging: hacky fix  ============", Rails.application.assets_manifest.files.values.map{|v| v['logical_path']}.include?('#{name}')
+
+      env.find_asset(name)
     end
   end
 end
