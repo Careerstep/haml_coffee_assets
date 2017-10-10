@@ -32,7 +32,8 @@ module HamlCoffeeAssets
     def self.find_asset(name)
       return "" unless ::Rails.respond_to?(:application)
       return "" unless ::Rails.application.respond_to?(:assets)
-      env.find_asset(name)
+      # env.find_asset(name)
+      Rails.application.assets_manifest.files.values.map{|v| v['logical_path']}.include?('#{name}')
     end
   end
 end
