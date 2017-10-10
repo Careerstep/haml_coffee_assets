@@ -33,12 +33,9 @@ module HamlCoffeeAssets
       return "" unless ::Rails.respond_to?(:application)
       return "" unless ::Rails.application.respond_to?(:assets)
       # env.find_asset(name)
-      puts "============for debugging: name ============", name
-      puts "============for debugging: Rails.application.assets  ============", Rails.application.assets
-      puts "============for debugging: env.find_asset(name)  ============", env.find_asset(name)
-      puts "============for debugging: hacky fix  ============", Rails.application.assets_manifest.files.values.map{|v| v['logical_path']}.include?('#{name}')
-
-      env.find_asset(name)
+      # known bug with sprockets 3 and find_asset in production
+      # https://stackoverflow.com/questions/35251759/undefined-method-find-asset-for-nilnilclass
+      env.find_asset(name) || ::Sprockets::Railtie.build_environment(Rails.application).find_asset(name)
     end
   end
 end
