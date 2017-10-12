@@ -90,9 +90,17 @@ module HamlCoffeeAssets
           end
         end
 
-        # Register Tilt template (for Sprockets)
-        configure_assets(app) do |env|
-          env.register_engine '.hamlc', ::HamlCoffeeAssets::Tilt::TemplateHandler
+        config.assets.configure do |env|
+          if env.respond_to?(:register_transformer)
+            env.register_mime_type 'text/hamlc', extensions: ['.hamlc']
+            env.register_transformer 'text/hamlc', 'application/javascript', ::HamlCoffeeAssets::Transformer
+          end
+
+          if env.respond_to?(:register_engine)
+            args = ['.hamlc', ::HamlCoffeeAssets::Transformer]
+            args << { mime_type: 'text/hamlc', silence_deprecation: true } if Sprockets::VERSION.start_with?('3')
+            env.register_engine(*args)
+          end
         end
       end
 
